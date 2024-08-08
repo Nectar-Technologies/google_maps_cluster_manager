@@ -29,55 +29,33 @@ class MapSample extends StatefulWidget {
 }
 
 class MapSampleState extends State<MapSample> {
-  late ClusterManager _manager;
-  late ClusterManager _manager2;
+  late CClusterManager _manager;
+  late CClusterManager _manager2;
 
   Completer<GoogleMapController> _controller = Completer();
 
   Set<Marker> markers = Set();
   Set<Marker> markers2 = Set();
 
-  final CameraPosition _parisCameraPosition =
-      CameraPosition(target: LatLng(48.856613, 2.352222), zoom: 12.0);
+  final CameraPosition _parisCameraPosition = CameraPosition(target: LatLng(48.856613, 2.352222), zoom: 12.0);
 
   List<Place> items = [
-    for (int i = 0; i < 10; i++)
-      Place(
-          name: 'Restaurant $i',
-          isClosed: i % 2 == 0,
-          latLng: LatLng(48.858265 - i * 0.001, 2.350107 + i * 0.001)),
-    for (int i = 0; i < 10; i++)
-      Place(
-          name: 'Bar $i',
-          latLng: LatLng(48.858265 + i * 0.01, 2.350107 - i * 0.01)),
-    for (int i = 0; i < 10; i++)
-      Place(
-          name: 'Hotel $i',
-          latLng: LatLng(48.858265 - i * 0.1, 2.350107 - i * 0.01)),
+    for (int i = 0; i < 10; i++) Place(name: 'Restaurant $i', isClosed: i % 2 == 0, latLng: LatLng(48.858265 - i * 0.001, 2.350107 + i * 0.001)),
+    for (int i = 0; i < 10; i++) Place(name: 'Bar $i', latLng: LatLng(48.858265 + i * 0.01, 2.350107 - i * 0.01)),
+    for (int i = 0; i < 10; i++) Place(name: 'Hotel $i', latLng: LatLng(48.858265 - i * 0.1, 2.350107 - i * 0.01)),
   ];
 
   List<Place> items2 = [
-    for (int i = 0; i < 10; i++)
-      Place(
-          name: 'Place $i',
-          latLng: LatLng(48.848200 + i * 0.001, 2.319124 + i * 0.001)),
-    for (int i = 0; i < 10; i++)
-      Place(
-          name: 'Test $i',
-          latLng: LatLng(48.858265 + i * 0.1, 2.350107 + i * 0.1)),
-    for (int i = 0; i < 10; i++)
-      Place(
-          name: 'Test2 $i',
-          latLng: LatLng(48.858265 + i * 1, 2.350107 + i * 1)),
+    for (int i = 0; i < 10; i++) Place(name: 'Place $i', latLng: LatLng(48.848200 + i * 0.001, 2.319124 + i * 0.001)),
+    for (int i = 0; i < 10; i++) Place(name: 'Test $i', latLng: LatLng(48.858265 + i * 0.1, 2.350107 + i * 0.1)),
+    for (int i = 0; i < 10; i++) Place(name: 'Test2 $i', latLng: LatLng(48.858265 + i * 1, 2.350107 + i * 1)),
   ];
 
   @override
   void initState() {
-    _manager = ClusterManager<Place>(items, _updateMarkers,
-        markerBuilder: _getMarkerBuilder(Colors.red));
+    _manager = CClusterManager<Place>(items, _updateMarkers, markerBuilder: _getMarkerBuilder(Colors.red));
 
-    _manager2 = ClusterManager<Place>(items2, _updateMarkers2,
-        markerBuilder: _getMarkerBuilder(Colors.blue));
+    _manager2 = CClusterManager<Place>(items2, _updateMarkers2, markerBuilder: _getMarkerBuilder(Colors.blue));
     super.initState();
   }
 
@@ -116,20 +94,14 @@ class MapSampleState extends State<MapSample> {
           }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _manager.setItems(<Place>[
-            for (int i = 0; i < 30; i++)
-              Place(
-                  name: 'New Place ${DateTime.now()} $i',
-                  latLng: LatLng(48.858265 + i * 0.01, 2.350107))
-          ]);
+          _manager.setItems(<Place>[for (int i = 0; i < 30; i++) Place(name: 'New Place ${DateTime.now()} $i', latLng: LatLng(48.858265 + i * 0.01, 2.350107))]);
         },
         child: Icon(Icons.update),
       ),
     );
   }
 
-  Future<Marker> Function(Cluster<Place>) _getMarkerBuilder(Color color) =>
-      (cluster) async {
+  Future<Marker> Function(CCluster<Place>) _getMarkerBuilder(Color color) => (cluster) async {
         return Marker(
           markerId: MarkerId(cluster.getId()),
           position: cluster.location,
@@ -137,13 +109,11 @@ class MapSampleState extends State<MapSample> {
             print('---- $cluster');
             cluster.items.forEach((p) => print(p));
           },
-          icon: await _getMarkerBitmap(cluster.isMultiple ? 125 : 75, color,
-              text: cluster.isMultiple ? cluster.count.toString() : null),
+          icon: await _getMarkerBitmap(cluster.isMultiple ? 125 : 75, color, text: cluster.isMultiple ? cluster.count.toString() : null),
         );
       };
 
-  Future<BitmapDescriptor> _getMarkerBitmap(int size, Color color,
-      {String? text}) async {
+  Future<BitmapDescriptor> _getMarkerBitmap(int size, Color color, {String? text}) async {
     if (kIsWeb) size = (size / 2).floor();
 
     final PictureRecorder pictureRecorder = PictureRecorder();
@@ -159,10 +129,7 @@ class MapSampleState extends State<MapSample> {
       TextPainter painter = TextPainter(textDirection: TextDirection.ltr);
       painter.text = TextSpan(
         text: text,
-        style: TextStyle(
-            fontSize: size / 3,
-            color: Colors.white,
-            fontWeight: FontWeight.normal),
+        style: TextStyle(fontSize: size / 3, color: Colors.white, fontWeight: FontWeight.normal),
       );
       painter.layout();
       painter.paint(

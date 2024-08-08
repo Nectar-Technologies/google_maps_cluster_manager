@@ -1,6 +1,6 @@
 library google_maps_cluster_manager;
 
-export 'src/cluster_manager.dart';
-export 'src/cluster_item.dart';
-export 'src/cluster.dart';
-export 'src/geohash.dart';
+export 'src/cCluster.dart';
+export 'src/cCluster_item.dart';
+export 'src/cCluster_manager.dart';
+export 'src/cGeohash.dart';
